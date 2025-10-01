@@ -1,5 +1,5 @@
-import { fetchProducts } from './utils/api.js';
-import { renderProducts } from './components/productCard.js';
+import { fetchProducts } from './src/utils/api.js';
+import { renderProducts } from './src/components/productCard.js';
 
 export async function initApp() {
   try {

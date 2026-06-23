@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0D2137"/>
+      <stop offset="60%" stop-color="#1B3A5B"/>
+      <stop offset="100%" stop-color="#1F4872"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="72%" cy="38%" r="55%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.07"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+  <rect x="0" y="0" width="5" height="630" fill="#FFFFFF" fill-opacity="0.12"/>
+
+  <!-- Monograma EI -->
+  <rect x="80" y="72" width="76" height="76" rx="15" fill="#FFFFFF" fill-opacity="0.1"/>
+  <text x="118" y="125" font-family="Arial Black, Arial, sans-serif" font-weight="900" font-size="30" fill="white" text-anchor="middle" letter-spacing="-1">EI</text>
+
+  <!-- Marca -->
+  <text x="80" y="205" font-family="Arial, sans-serif" font-weight="700" font-size="21" fill="white" fill-opacity="0.45" letter-spacing="1.5">ESSENTIAL IMPORT</text>
+
+  <!-- Headline -->
+  <text x="80" y="340" font-family="Arial Black, Arial, sans-serif" font-weight="900" font-size="92" fill="white" letter-spacing="-3">Traé lo que</text>
+  <text x="80" y="455" font-family="Arial Black, Arial, sans-serif" font-weight="900" font-size="92" fill="white" letter-spacing="-3">no conseguís.</text>
+
+  <!-- Sublinea -->
+  <text x="80" y="522" font-family="Arial, sans-serif" font-size="27" fill="white" fill-opacity="0.5">Perfumes · Tecnología · Gadgets · CABA y todo el país</text>
+
+  <!-- Franja inferior -->
+  <rect x="0" y="568" width="1200" height="62" fill="#FFFFFF" fill-opacity="0.05"/>
+  <text x="80" y="607" font-family="Arial, sans-serif" font-size="20" fill="white" fill-opacity="0.38">wa.me/5491160476175  ·  @essential.import_ok</text>
+</svg>

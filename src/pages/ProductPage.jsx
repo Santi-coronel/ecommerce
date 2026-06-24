@@ -2,16 +2,17 @@ import React, { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { doc, getDoc } from 'firebase/firestore'
 import { db } from '../services/firebase'
+import { MessageCircle, ArrowLeft } from 'lucide-react'
 
-const getWhatsAppUrl = (title) =>
+const waUrl = (title) =>
   `https://wa.me/5491160476175?text=${encodeURIComponent(`Hola Essential Import, me interesa el producto: ${title}`)}`
 
-const getAvailabilityBadge = (product) => {
-  if (product.disponibilidad === 'A pedido') return { text: 'A pedido', bg: '#6366F1' }
+const badgeFor = (product) => {
+  if (product.disponibilidad === 'A pedido') return { text: 'A pedido', cls: 'bg-navy-light/10 text-navy-light' }
   const stock = product.stock ?? 0
-  if (stock === 0)  return { text: 'Sin stock', bg: '#EF4444' }
-  if (stock <= 5)   return { text: `¡Quedan ${stock} unidades!`, bg: '#F59E0B' }
-  return { text: `${stock} unidades en stock`, bg: '#10B981' }
+  if (stock === 0) return { text: 'Sin stock', cls: 'bg-rose-100 text-rose-700' }
+  if (stock <= 5) return { text: `¡Quedan ${stock} unidades!`, cls: 'bg-amber-100 text-amber-700' }
+  return { text: `${stock} unidades en stock`, cls: 'bg-emerald-100 text-emerald-700' }
 }
 
 const ProductPage = () => {
@@ -20,126 +21,91 @@ const ProductPage = () => {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const fetchProduct = async () => {
-      setLoading(true)
-      const snap = await getDoc(doc(db, 'products', id))
+    setLoading(true)
+    getDoc(doc(db, 'products', id)).then((snap) => {
       if (snap.exists()) setProduct({ id: snap.id, ...snap.data() })
       setLoading(false)
-    }
-    fetchProduct()
+    })
   }, [id])
 
+  // SEO dinámico por producto (title + meta description)
   useEffect(() => {
     if (!product) return
-    const name  = product.title || product.nombre || 'Producto'
+    const name = product.title || product.nombre || 'Producto'
     const price = product.price ?? product.precio ?? 0
-    const desc  = product.description || product.descripcion || ''
+    const desc = product.description || product.descripcion || ''
     const snippet = desc.length > 110 ? desc.slice(0, 110) + '…' : desc
-
     document.title = `${name} — Essential Import`
     const metaDesc = document.querySelector('meta[name="description"]')
-    if (metaDesc) {
-      metaDesc.setAttribute('content',
-        `${name} a $${price.toLocaleString()}. ${snippet} Consultá por WhatsApp.`.trim()
-      )
-    }
-
+    if (metaDesc) metaDesc.setAttribute('content', `${name} a $${price.toLocaleString()}. ${snippet} Consultá por WhatsApp.`.trim())
     return () => {
       document.title = 'Essential Import — Perfumes, tecnología y gadgets importados | CABA y todo el país'
-      if (metaDesc) {
-        metaDesc.setAttribute('content',
-          'Importamos perfumes originales, tecnología y gadgets. Envíos en CABA con moto 24/7 y a todo el país. Consultá lo que buscás por WhatsApp.'
-        )
-      }
+      if (metaDesc) metaDesc.setAttribute('content', 'Importamos perfumes originales, tecnología y gadgets. Envíos en CABA con moto 24/7 y a todo el país. Consultá lo que buscás por WhatsApp.')
     }
   }, [product])
 
   if (loading) return (
-    <div className="loading">
-      <div style={{
-        width: 44, height: 44, borderRadius: '50%',
-        border: '4px solid #E8EBF0',
-        borderTopColor: '#1B3A5B',
-        animation: 'spin 0.8s linear infinite',
-        margin: '0 auto 1rem'
-      }} />
-      <p>Cargando...</p>
+    <div className="flex min-h-[60vh] flex-col items-center justify-center bg-surface text-body">
+      <div className="mb-4 h-11 w-11 animate-spin rounded-full border-4 border-line border-t-navy-light" />
+      <p>Cargando…</p>
     </div>
   )
 
   if (!product) return (
-    <div style={{ textAlign: 'center', padding: '5rem 1.5rem' }}>
-      <p style={{ color: '#6B7280', marginBottom: '1.5rem' }}>Producto no encontrado.</p>
-      <Link to="/products" className="btn">Ver catálogo</Link>
+    <div className="flex min-h-[60vh] flex-col items-center justify-center gap-5 bg-surface px-5 text-center">
+      <p className="text-body">Producto no encontrado.</p>
+      <Link to="/products" className="rounded-xl bg-navy-light px-6 py-3 font-semibold text-white">Ver catálogo</Link>
     </div>
   )
 
-  const title       = product.title || product.nombre
-  const price       = product.price ?? product.precio ?? 0
-  const image       = product.image || product.imagen
+  const title = product.title || product.nombre
+  const price = product.price ?? product.precio ?? 0
+  const image = product.image || product.imagen
   const description = product.description || product.descripcion
-  const badge       = getAvailabilityBadge(product)
+  const badge = badgeFor(product)
 
   return (
-    <div style={{ padding: '1.5rem' }}>
-      <div className="product-detail">
-        <img
-          src={image || 'https://via.placeholder.com/480x480?text=Sin+imagen'}
-          alt={title}
-        />
+    <div className="min-h-screen bg-surface">
+      <div className="mx-auto max-w-6xl px-5 py-10 sm:px-8 sm:py-14">
+        <Link to="/products" className="mb-8 inline-flex items-center gap-1.5 text-sm font-medium text-body transition-colors hover:text-navy-light">
+          <ArrowLeft size={16} /> Volver al catálogo
+        </Link>
 
-        <div>
-          {product.categoria && (
-            <p style={{ fontSize: '0.78rem', fontWeight: 600, color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '0.75rem' }}>
-              {product.categoria}
-            </p>
-          )}
+        <div className="grid gap-8 lg:grid-cols-2 lg:gap-14">
+          <div className="overflow-hidden rounded-2xl border border-line bg-white">
+            <img
+              src={image || 'https://via.placeholder.com/640x640?text=Sin+imagen'}
+              alt={title}
+              className="aspect-square w-full object-cover"
+            />
+          </div>
 
-          <h2>{title}</h2>
-          <p className="product-price">${price.toLocaleString()}</p>
+          <div className="flex flex-col">
+            {product.categoria && (
+              <p className="mb-3 text-xs font-semibold uppercase tracking-[0.1em] text-body">{product.categoria}</p>
+            )}
+            <h1 className="text-[clamp(1.6rem,4vw,2.4rem)] font-bold leading-tight tracking-tight text-ink text-balance">
+              {title}
+            </h1>
+            <p className="mt-3 text-3xl font-bold text-navy-light">${price.toLocaleString()}</p>
+            <span className={`mt-4 inline-flex w-fit rounded-full px-3 py-1 text-sm font-semibold ${badge.cls}`}>
+              {badge.text}
+            </span>
 
-          <span style={{
-            display: 'inline-block',
-            background: badge.bg,
-            color: '#fff',
-            padding: '0.35rem 0.9rem',
-            borderRadius: 8,
-            fontWeight: 700,
-            fontSize: '0.85rem',
-            marginBottom: description ? '1.5rem' : '2rem'
-          }}>
-            {badge.text}
-          </span>
+            {description && (
+              <p className="mt-6 max-w-prose text-[0.97rem] leading-relaxed text-body">{description}</p>
+            )}
 
-          {description && (
-            <p style={{
-              color: '#6B7280',
-              fontSize: '0.95rem',
-              lineHeight: 1.7,
-              margin: '1rem 0 2rem'
-            }}>
-              {description}
-            </p>
-          )}
-
-          <a
-            href={getWhatsAppUrl(title)}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn"
-            style={{
-              display: 'inline-block',
-              background: '#25D366',
-              padding: '0.9rem 2.25rem',
-              fontSize: '1rem'
-            }}
-          >
-            💬 Consultar por WhatsApp
-          </a>
-
-          <p style={{ marginTop: '1.25rem', fontSize: '0.82rem', color: '#9CA3AF' }}>
-            Coordinamos pago y envío por WhatsApp.
-          </p>
+            <a
+              href={waUrl(title)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-8 inline-flex min-h-[52px] w-full items-center justify-center gap-2.5 rounded-xl bg-wa px-8 text-base font-semibold text-white transition-all duration-200 hover:brightness-105 sm:w-auto"
+            >
+              <MessageCircle size={20} /> Consultar por WhatsApp
+            </a>
+            <p className="mt-4 text-sm text-body/80">Coordinamos pago y envío por WhatsApp.</p>
+          </div>
         </div>
       </div>
     </div>

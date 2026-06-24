@@ -32,8 +32,7 @@ const Faq = () => {
     <section id="faq" className="bg-white py-24 sm:py-32">
       <div className="mx-auto max-w-3xl px-5 sm:px-8">
         <Reveal className="mb-12">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-navy-light/70">Preguntas</p>
-          <h2 className="mt-2 text-[clamp(1.75rem,4vw,2.75rem)] font-bold tracking-tightest text-navy">
+          <h2 className="text-[clamp(1.75rem,4vw,2.75rem)] font-bold tracking-tightest text-ink text-balance">
             Lo que más nos preguntan
           </h2>
         </Reveal>
@@ -45,9 +44,10 @@ const Faq = () => {
               <div key={i} className="border-b border-black/10">
                 <button
                   onClick={() => setOpen(isOpen ? null : i)}
+                  aria-expanded={isOpen}
                   className="flex w-full items-center justify-between gap-6 py-6 text-left"
                 >
-                  <span className="text-lg font-medium tracking-tight text-navy sm:text-xl">{item.q}</span>
+                  <span className="text-lg font-medium tracking-tight text-ink sm:text-xl">{item.q}</span>
                   <Plus
                     size={22}
                     className={`shrink-0 text-navy-light transition-transform duration-300 ${isOpen ? 'rotate-45' : ''}`}
@@ -59,7 +59,7 @@ const Faq = () => {
                   }`}
                 >
                   <div className="overflow-hidden">
-                    <p className="max-w-2xl text-base leading-relaxed text-slate-500">{item.a}</p>
+                    <p className="max-w-2xl text-base leading-relaxed text-body">{item.a}</p>
                   </div>
                 </div>
               </div>

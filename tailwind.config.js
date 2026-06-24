@@ -10,7 +10,12 @@ export default {
           light: '#1B3A5B',
           700: '#142D47',
         },
-        muted: '#94A3B8',
+        muted: '#94A3B8',   // texto secundario sobre fondo oscuro
+        ink: '#0F172A',     // texto principal sobre fondo claro
+        body: '#475569',    // texto secundario sobre fondo claro (~7:1)
+        line: '#E2E8F0',    // borde sobre fondo claro
+        surface: '#F8FAFC', // fondo claro alternativo
+        wa: '#25D366',      // verde WhatsApp
       },
       fontFamily: {
         sans: ['"Inter Variable"', 'Inter', 'system-ui', '-apple-system', 'sans-serif'],

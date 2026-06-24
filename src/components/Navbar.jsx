@@ -72,7 +72,7 @@ const Navbar = () => {
           </a>
           <button
             onClick={() => setOpen((v) => !v)}
-            className="grid h-9 w-9 place-items-center rounded-lg text-white transition-colors hover:bg-white/10 md:hidden"
+            className="grid h-11 w-11 place-items-center rounded-lg text-white transition-colors hover:bg-white/10 md:hidden"
             aria-label="Abrir menú"
           >
             {open ? <X size={20} /> : <Menu size={20} />}

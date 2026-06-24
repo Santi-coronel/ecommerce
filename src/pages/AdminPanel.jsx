@@ -37,7 +37,6 @@ const inputStyle = {
   borderRadius: '8px',
   fontSize: '0.95rem',
   fontFamily: 'inherit',
-  outline: 'none',
   boxSizing: 'border-box',
   transition: 'border-color 0.2s',
   background: 'white'

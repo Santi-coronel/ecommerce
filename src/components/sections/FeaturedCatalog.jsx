@@ -12,11 +12,13 @@ const Card = ({ p }) => {
   return (
     <Link to={`/product/${p.id}`} className="group w-[78vw] shrink-0 snap-start sm:w-[300px]">
       <div className="overflow-hidden rounded-2xl border border-black/5 bg-white shadow-sm transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-2xl group-hover:shadow-navy/10">
-        <div className="aspect-[4/5] overflow-hidden bg-[#EEF2F7]">
+        <div className="aspect-[4/5] overflow-hidden bg-surface">
           {image ? (
             <img
               src={image}
               alt={title}
+              loading="lazy"
+              decoding="async"
               className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
             />
           ) : (
@@ -24,10 +26,10 @@ const Card = ({ p }) => {
           )}
         </div>
         <div className="p-5">
-          <p className="truncate text-sm font-semibold text-navy">{title}</p>
+          <p className="truncate text-sm font-semibold text-ink">{title}</p>
           <div className="mt-1.5 flex items-center justify-between">
             <p className="text-lg font-bold text-navy-light">${price.toLocaleString()}</p>
-            <span className="flex -translate-x-1 items-center gap-1 text-xs font-medium text-muted opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100">
+            <span className="flex -translate-x-1 items-center gap-1 text-xs font-medium text-body opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100">
               Ver detalle <ArrowRight size={14} />
             </span>
           </div>
@@ -52,12 +54,9 @@ const FeaturedCatalog = () => {
     <section id="lo-ultimo" className="bg-white py-24 sm:py-32">
       <div className="mx-auto mb-12 max-w-7xl px-5 sm:px-8">
         <Reveal className="flex items-end justify-between gap-4">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-navy-light/70">Catálogo</p>
-            <h2 className="mt-2 text-[clamp(1.75rem,4vw,2.75rem)] font-bold tracking-tightest text-navy">
-              Lo último importado
-            </h2>
-          </div>
+          <h2 className="text-[clamp(1.75rem,4vw,2.75rem)] font-bold tracking-tightest text-ink text-balance">
+            Lo último importado
+          </h2>
           <Link
             to="/products"
             className="group flex shrink-0 items-center gap-1.5 text-sm font-semibold text-navy transition-colors hover:text-navy-light"

@@ -2,16 +2,16 @@ import React from 'react'
 import ProductList from '../components/ProductList'
 
 const Products = () => (
-  <div>
-    <div style={{ background: '#fff', borderBottom: '1px solid #E8EBF0', padding: '2rem 0' }}>
-      <div className="container">
-        <h1 style={{ fontSize: '1.65rem', fontWeight: 700, color: '#111827' }}>Catálogo</h1>
-        <p style={{ color: '#6B7280', fontSize: '0.93rem', marginTop: '0.2rem' }}>
-          Perfumes, parlantes y electrónica importada
+  <div className="min-h-screen bg-surface">
+    <div className="mx-auto max-w-7xl px-5 py-12 sm:px-8 sm:py-16">
+      <header className="mb-10">
+        <h1 className="text-[clamp(2rem,5vw,3rem)] font-bold tracking-tightest text-ink text-balance">
+          Catálogo
+        </h1>
+        <p className="mt-2 max-w-xl text-body">
+          Perfumes, tecnología, gadgets y más — importados a pedido o en stock.
         </p>
-      </div>
-    </div>
-    <div className="container" style={{ paddingTop: '1.5rem', paddingBottom: '3rem' }}>
+      </header>
       <ProductList />
     </div>
   </div>

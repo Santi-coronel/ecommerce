@@ -29,10 +29,10 @@ const Tile = ({ d, i }) => {
       href={IG}
       target="_blank"
       rel="noopener noreferrer"
-      className={`group relative overflow-hidden rounded-xl bg-[#EEF2F7] ${spanFor(i)}`}
+      className={`group relative overflow-hidden rounded-xl bg-surface ${spanFor(i)}`}
     >
       {img ? (
-        <img src={img} alt={producto} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+        <img src={img} alt={producto} loading="lazy" decoding="async" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
       ) : (
         <div className="grid h-full w-full place-items-center text-muted">
           <div className="text-center">
@@ -53,9 +53,7 @@ const Deliveries = () => {
 
   useEffect(() => {
     getDocs(query(collection(db, 'entregas'), limit(9)))
-      .then((s) => {
-        if (!s.empty) setItems(s.docs.map((d) => ({ id: d.id, ...d.data() })))
-      })
+      .then((s) => { if (!s.empty) setItems(s.docs.map((d) => ({ id: d.id, ...d.data() }))) })
       .catch(() => {})
   }, [])
 
@@ -63,10 +61,10 @@ const Deliveries = () => {
     <section id="entregas" className="bg-white py-24 sm:py-32">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <Reveal className="mb-12">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-navy-light/70">Pruebas, no promesas</p>
-          <h2 className="mt-2 text-[clamp(1.75rem,4vw,2.75rem)] font-bold tracking-tightest text-navy">
+          <h2 className="text-[clamp(1.75rem,4vw,2.75rem)] font-bold tracking-tightest text-ink text-balance">
             Entregas reales
           </h2>
+          <p className="mt-2 text-body">Pedidos que ya están en manos de nuestros clientes.</p>
         </Reveal>
 
         <Reveal>

@@ -9,64 +9,50 @@ const ProductList = () => {
   const [active, setActive] = useState('Todos')
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const snap = await getDocs(collection(db, 'products'))
-        setProducts(snap.docs.map(d => ({ id: d.id, ...d.data() })))
-      } catch (err) {
-        console.error(err)
-      } finally {
-        setLoading(false)
-      }
-    }
-    fetchProducts()
+    getDocs(collection(db, 'products'))
+      .then((snap) => setProducts(snap.docs.map((d) => ({ id: d.id, ...d.data() }))))
+      .catch((err) => console.error(err))
+      .finally(() => setLoading(false))
   }, [])
 
   // Categorías derivadas de los productos reales (+ "Todos")
   const categories = useMemo(() => {
     const set = new Set()
-    products.forEach(p => { if (p.categoria) set.add(p.categoria) })
+    products.forEach((p) => { if (p.categoria) set.add(p.categoria) })
     return ['Todos', ...[...set].sort((a, b) => a.localeCompare(b, 'es'))]
   }, [products])
 
-  const visible = active === 'Todos'
-    ? products
-    : products.filter(p => p.categoria === active)
+  const visible = active === 'Todos' ? products : products.filter((p) => p.categoria === active)
 
   if (loading) return (
-    <div className="loading">
-      <div style={{
-        width: 44, height: 44, borderRadius: '50%',
-        border: '4px solid #E8EBF0',
-        borderTopColor: '#1B3A5B',
-        animation: 'spin 0.8s linear infinite',
-        margin: '0 auto 1rem'
-      }} />
-      <p style={{ color: '#6B7280' }}>Cargando productos...</p>
+    <div className="flex flex-col items-center justify-center py-24 text-body">
+      <div className="mb-4 h-11 w-11 animate-spin rounded-full border-4 border-line border-t-navy-light" />
+      <p>Cargando productos…</p>
     </div>
   )
 
   if (products.length === 0) return (
-    <div className="empty-state">
-      <h2>No hay productos disponibles</h2>
-      <p style={{ color: '#6B7280', marginTop: '0.5rem' }}>Volvé pronto para ver las novedades.</p>
+    <div className="rounded-2xl border border-line bg-white py-16 text-center">
+      <h2 className="text-xl font-semibold text-ink">No hay productos disponibles</h2>
+      <p className="mt-2 text-body">Volvé pronto para ver las novedades.</p>
     </div>
   )
 
   return (
     <div>
       {categories.length > 1 && (
-        <div className="mb-7 flex flex-wrap gap-2">
-          {categories.map(c => {
+        <div className="mb-8 flex flex-wrap gap-2">
+          {categories.map((c) => {
             const on = active === c
             return (
               <button
                 key={c}
                 onClick={() => setActive(c)}
-                className={`rounded-full px-4 py-2 text-sm font-semibold transition-all duration-200 ${
+                aria-pressed={on}
+                className={`inline-flex min-h-[44px] items-center rounded-full px-5 text-sm font-semibold transition-all duration-200 ${
                   on
-                    ? 'bg-[#1B3A5B] text-white shadow-md shadow-[#1B3A5B]/25'
-                    : 'border border-[#E8EBF0] bg-white text-[#374151] hover:border-[#1B3A5B]/40 hover:text-[#1B3A5B]'
+                    ? 'bg-navy-light text-white shadow-md shadow-navy/20'
+                    : 'border border-line bg-white text-body hover:border-navy-light/40 hover:text-navy-light'
                 }`}
               >
                 {c}
@@ -77,13 +63,13 @@ const ProductList = () => {
       )}
 
       {visible.length === 0 ? (
-        <div className="empty-state">
-          <h2>No hay productos en esta categoría</h2>
-          <p style={{ color: '#6B7280', marginTop: '0.5rem' }}>Probá con otra categoría o consultanos por WhatsApp.</p>
+        <div className="rounded-2xl border border-line bg-white py-16 text-center">
+          <h2 className="text-xl font-semibold text-ink">No hay productos en esta categoría</h2>
+          <p className="mt-2 text-body">Probá con otra categoría o consultanos por WhatsApp.</p>
         </div>
       ) : (
-        <div className="grid">
-          {visible.map(p => <ProductCard key={p.id} product={p} />)}
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-5 lg:grid-cols-4">
+          {visible.map((p) => <ProductCard key={p.id} product={p} />)}
         </div>
       )}
     </div>

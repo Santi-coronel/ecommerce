@@ -12,8 +12,7 @@ const HowItWorks = () => (
   <section id="como-funciona" className="bg-navy py-24 sm:py-32">
     <div className="mx-auto max-w-3xl px-5 sm:px-8">
       <Reveal className="mb-16">
-        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted">El proceso</p>
-        <h2 className="mt-2 text-[clamp(1.75rem,4vw,2.75rem)] font-bold tracking-tightest text-white">
+        <h2 className="text-[clamp(1.75rem,4vw,2.75rem)] font-bold tracking-tightest text-white text-balance">
           Así funciona
         </h2>
       </Reveal>

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
+import { motion, useReducedMotion } from 'framer-motion'
 import { doc, getDoc } from 'firebase/firestore'
 import { db } from '../services/firebase'
 import { MessageCircle, ArrowLeft } from 'lucide-react'
@@ -19,6 +20,7 @@ const ProductPage = () => {
   const { id } = useParams()
   const [product, setProduct] = useState(null)
   const [loading, setLoading] = useState(true)
+  const reduce = useReducedMotion()
 
   useEffect(() => {
     setLoading(true)
@@ -64,27 +66,33 @@ const ProductPage = () => {
   const description = product.description || product.descripcion
   const badge = badgeFor(product)
 
+  const reveal = (delay) => reduce
+    ? { initial: { opacity: 1, y: 0 }, animate: { opacity: 1, y: 0 } }
+    : { initial: { opacity: 0, y: 22 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] } }
+
   return (
-    <div className="min-h-screen bg-surface">
-      <div className="mx-auto max-w-6xl px-5 py-10 sm:px-8 sm:py-14">
+    <div className="relative min-h-screen bg-surface">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-72 bg-gradient-to-b from-navy/[0.05] to-transparent" />
+
+      <div className="relative mx-auto max-w-6xl px-5 py-10 sm:px-8 sm:py-14">
         <Link to="/products" className="mb-8 inline-flex items-center gap-1.5 text-sm font-medium text-body transition-colors hover:text-navy-light">
           <ArrowLeft size={16} /> Volver al catálogo
         </Link>
 
         <div className="grid gap-8 lg:grid-cols-2 lg:gap-14">
-          <div className="overflow-hidden rounded-2xl border border-line bg-white">
+          <motion.div {...reveal(0)} className="group overflow-hidden rounded-2xl border border-line bg-white">
             <img
               src={image || 'https://via.placeholder.com/640x640?text=Sin+imagen'}
               alt={title}
-              className="aspect-square w-full object-cover"
+              className="aspect-square w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
             />
-          </div>
+          </motion.div>
 
-          <div className="flex flex-col">
+          <motion.div {...reveal(0.1)} className="flex flex-col">
             {product.categoria && (
               <p className="mb-3 text-xs font-semibold uppercase tracking-[0.1em] text-body">{product.categoria}</p>
             )}
-            <h1 className="text-[clamp(1.6rem,4vw,2.4rem)] font-bold leading-tight tracking-tight text-ink text-balance">
+            <h1 className="text-[clamp(1.7rem,4vw,2.6rem)] font-bold leading-tight tracking-tight text-ink text-balance">
               {title}
             </h1>
             <p className="mt-3 text-3xl font-bold text-navy-light">${price.toLocaleString()}</p>
@@ -105,7 +113,7 @@ const ProductPage = () => {
               <MessageCircle size={20} /> Consultar por WhatsApp
             </a>
             <p className="mt-4 text-sm text-body/80">Coordinamos pago y envío por WhatsApp.</p>
-          </div>
+          </motion.div>
         </div>
       </div>
     </div>

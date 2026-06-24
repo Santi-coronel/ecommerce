@@ -1,5 +1,4 @@
 import React from 'react'
-import Grain from '../components/Grain'
 import FlyingPlane from '../components/FlyingPlane'
 import Hero from '../components/sections/Hero'
 import BrandMarquee from '../components/sections/BrandMarquee'
@@ -12,7 +11,6 @@ import FinalCta from '../components/sections/FinalCta'
 
 const Home = () => (
   <>
-    <Grain />
     <FlyingPlane />
     <Hero />
     <BrandMarquee />

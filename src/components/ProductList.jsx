@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
+import { motion, useReducedMotion } from 'framer-motion'
 import { collection, getDocs } from 'firebase/firestore'
 import { db } from '../services/firebase'
 import ProductCard from './ProductCard'
@@ -7,6 +8,7 @@ const ProductList = () => {
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
   const [active, setActive] = useState('Todos')
+  const reduce = useReducedMotion()
 
   useEffect(() => {
     getDocs(collection(db, 'products'))
@@ -23,6 +25,11 @@ const ProductList = () => {
   }, [products])
 
   const visible = active === 'Todos' ? products : products.filter((p) => p.categoria === active)
+
+  const grid = { hidden: {}, show: { transition: { staggerChildren: reduce ? 0 : 0.05 } } }
+  const card = reduce
+    ? { hidden: { opacity: 1, y: 0 }, show: { opacity: 1, y: 0 } }
+    : { hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } } }
 
   if (loading) return (
     <div className="flex flex-col items-center justify-center py-24 text-body">
@@ -49,13 +56,16 @@ const ProductList = () => {
                 key={c}
                 onClick={() => setActive(c)}
                 aria-pressed={on}
-                className={`inline-flex min-h-[44px] items-center rounded-full px-5 text-sm font-semibold transition-all duration-200 ${
-                  on
-                    ? 'bg-navy-light text-white shadow-md shadow-navy/20'
-                    : 'border border-line bg-white text-body hover:border-navy-light/40 hover:text-navy-light'
+                className={`relative inline-flex min-h-[44px] items-center rounded-full px-5 text-sm font-semibold transition-colors duration-200 ${
+                  on ? 'text-white' : 'border border-line bg-white text-body hover:text-navy-light'
                 }`}
               >
-                {c}
+                {on && (
+                  reduce
+                    ? <span className="absolute inset-0 rounded-full bg-navy-light" />
+                    : <motion.span layoutId="filterPill" className="absolute inset-0 rounded-full bg-navy-light shadow-md shadow-navy/20" transition={{ type: 'spring', stiffness: 400, damping: 32 }} />
+                )}
+                <span className="relative z-10">{c}</span>
               </button>
             )
           })}
@@ -68,9 +78,19 @@ const ProductList = () => {
           <p className="mt-2 text-body">Probá con otra categoría o consultanos por WhatsApp.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-5 lg:grid-cols-4">
-          {visible.map((p) => <ProductCard key={p.id} product={p} />)}
-        </div>
+        <motion.div
+          key={active}
+          initial="hidden"
+          animate="show"
+          variants={grid}
+          className="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-5 lg:grid-cols-4"
+        >
+          {visible.map((p) => (
+            <motion.div key={p.id} variants={card}>
+              <ProductCard product={p} />
+            </motion.div>
+          ))}
+        </motion.div>
       )}
     </div>
   )

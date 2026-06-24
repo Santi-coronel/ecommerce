@@ -2,3 +2,6 @@ node_modules
 dist
 .env
 .vercel
+
+# Herramienta de diseño instalada (no es código del producto)
+.claude/skills/impeccable/

@@ -1,0 +1,55 @@
+rules_version = '2';
+
+// Reglas de seguridad de Firestore — Essential Import
+// Modelo: tienda pública (catálogo + galería) con UN único admin que gestiona todo.
+// Firestore deniega por defecto cualquier acceso que no se permita explícitamente acá.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Helper ───────────────────────────────────────────────
+    // Verdadero SOLO si quien hace la request está logueado como el admin.
+    // Lo atamos al UID exacto (no a "cualquier logueado"): con la API key
+    // pública alguien podría auto-registrarse, pero su UID no sería este.
+    function isAdmin() {
+      return request.auth != null
+        && request.auth.uid == 'vlDECuQjOXZDI6Xri0MhRcCylR22';
+    }
+
+    // ── products ─────────────────────────────────────────────
+    // Catálogo: cualquiera puede LEER (la tienda es pública, sin login).
+    // Crear / editar / borrar: SOLO el admin.
+    match /products/{productId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ── entregas ─────────────────────────────────────────────
+    // Galería "Entregas reales": misma lógica que products.
+    match /entregas/{entregaId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ── consultas ────────────────────────────────────────────
+    // Hoy NO existe; la dejamos lista de forma defensiva por si volvés
+    // a poner un formulario de contacto.
+    //   • create: cualquiera puede ENVIAR una consulta (sin login),
+    //     con un tope de 12 campos para frenar payloads abusivos.
+    //   • read / update / delete: SOLO el admin (los leads no son públicos).
+    match /consultas/{consultaId} {
+      allow create: if request.resource.data.keys().size() <= 12;
+      allow read, update, delete: if isAdmin();
+    }
+
+    // ── Todo lo demás ────────────────────────────────────────
+    // Deny-by-default explícito: cualquier otra colección o subcolección
+    // (futura o inesperada) queda denegada para todos.
+    // Nota: esto NO pisa los permisos de arriba — Firestore concede el acceso
+    // si CUALQUIER regla que matchea lo permite; este `if false` solo documenta
+    // la intención y cubre todo lo no listado.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

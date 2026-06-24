@@ -1,27 +1,35 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import { Link } from 'react-router-dom'
-import { motion, useReducedMotion } from 'framer-motion'
+import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion'
 import { ArrowDown } from 'lucide-react'
+import Spotlight from '../Spotlight'
 
 const WA = `https://wa.me/5491160476175?text=${encodeURIComponent('Hola Essential Import, quisiera pedir una cotización')}`
 
 const Hero = () => {
   const reduce = useReducedMotion()
+  const ref = useRef(null)
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] })
+  const yRaw = useTransform(scrollYProgress, [0, 1], ['0%', '28%'])
+  const auroraY = reduce ? 0 : yRaw
+
   const item = reduce
     ? { hidden: { opacity: 1, y: 0 }, show: { opacity: 1, y: 0 } }
     : { hidden: { opacity: 0, y: 26 }, show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] } } }
   const container = { hidden: {}, show: { transition: { staggerChildren: reduce ? 0 : 0.12 } } }
 
   return (
-    <section className="relative flex min-h-[100svh] items-center justify-center overflow-hidden bg-navy px-5 pb-20 pt-16">
-      {/* Aurora: manchas de color suaves en movimiento */}
-      <div className="pointer-events-none absolute inset-0">
+    <section ref={ref} className="relative flex min-h-[100svh] items-center justify-center overflow-hidden bg-navy px-5 pb-20 pt-16">
+      {/* Aurora con parallax suave al scroll */}
+      <motion.div style={{ y: auroraY }} className="pointer-events-none absolute inset-0">
         <div className="aurora-blob aurora-a left-[8%] top-[12%] h-[42vmax] w-[42vmax] bg-[#1B3A5B]" />
         <div className="aurora-blob aurora-b right-[2%] top-[8%] h-[34vmax] w-[34vmax] bg-[#3730a3]" />
         <div className="aurora-blob aurora-c bottom-[2%] left-[28%] h-[36vmax] w-[36vmax] bg-[#5b21b6]" />
-        <div className="absolute inset-0 bg-navy/40" />
-        <div className="absolute inset-0 bg-gradient-to-b from-navy/10 via-transparent to-navy" />
-      </div>
+      </motion.div>
+      <div className="pointer-events-none absolute inset-0 bg-navy/40" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-navy/10 via-transparent to-navy" />
+      {/* Luz que sigue al cursor (desktop) */}
+      <Spotlight />
 
       <motion.div
         initial="hidden"
@@ -37,13 +45,13 @@ const Hero = () => {
           Importación a pedido · Originales
         </motion.span>
 
+        {/* Contraste de peso: línea liviana + línea extrabold */}
         <motion.h1
           variants={item}
-          className="mt-7 text-[clamp(2.5rem,7vw,5rem)] font-bold leading-[1.02] tracking-tightest text-white text-balance"
+          className="mt-7 text-[clamp(2.6rem,7.5vw,5.5rem)] leading-[0.98] tracking-tightest text-white text-balance"
         >
-          Lo que buscás,
-          <br />
-          lo conseguimos.
+          <span className="block font-light text-white/85">Lo que buscás,</span>
+          <span className="block font-extrabold">lo conseguimos.</span>
         </motion.h1>
 
         <motion.p

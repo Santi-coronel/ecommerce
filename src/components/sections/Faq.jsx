@@ -29,7 +29,7 @@ const Faq = () => {
   const [open, setOpen] = useState(0)
 
   return (
-    <section id="faq" className="bg-white py-24 sm:py-32">
+    <section id="faq" className="bg-white py-20 sm:py-28">
       <div className="mx-auto max-w-3xl px-5 sm:px-8">
         <Reveal className="mb-12">
           <h2 className="text-[clamp(1.75rem,4vw,2.75rem)] font-bold tracking-tightest text-ink text-balance">

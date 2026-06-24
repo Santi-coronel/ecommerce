@@ -255,3 +255,26 @@ button:disabled {
 @media (min-width: 1440px) {
   :root { --container: 1380px; }
 }
+
+/* ===== Textura: grano sutil sobre todo el sitio ===== */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.055;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+}
+
+/* ===== Textura: grilla de puntos (secciones claras) ===== */
+.dot-grid {
+  background-image: radial-gradient(circle, rgba(15, 23, 42, 0.07) 1px, transparent 1.4px);
+  background-size: 24px 24px;
+}
+
+/* Línea de timeline que se dibuja (se controla con --draw 0→1) */
+@media (prefers-reduced-motion: reduce) {
+  .draw-line { transform: scaleY(1) !important; }
+}

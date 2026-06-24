@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { motion, useReducedMotion } from 'framer-motion'
 import { collection, getDocs, query, limit } from 'firebase/firestore'
 import { db } from '../../services/firebase'
 import { Camera, ArrowUpRight } from 'lucide-react'
@@ -21,7 +22,7 @@ const FALLBACK = [
 // Patrón asimétrico: la primera ocupa 2x2 desde sm en adelante
 const spanFor = (i) => (i === 0 ? 'sm:col-span-2 sm:row-span-2' : '')
 
-const Tile = ({ d, i }) => {
+const Tile = ({ d }) => {
   const img = d.imagen || d.img || d.image
   const producto = d.producto || d.caption || d.nombre || ''
   return (
@@ -29,7 +30,7 @@ const Tile = ({ d, i }) => {
       href={IG}
       target="_blank"
       rel="noopener noreferrer"
-      className={`group relative overflow-hidden rounded-xl bg-surface ${spanFor(i)}`}
+      className="group relative block h-full w-full overflow-hidden rounded-xl bg-surface"
     >
       {img ? (
         <img src={img} alt={producto} loading="lazy" decoding="async" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
@@ -50,12 +51,18 @@ const Tile = ({ d, i }) => {
 
 const Deliveries = () => {
   const [items, setItems] = useState(FALLBACK)
+  const reduce = useReducedMotion()
 
   useEffect(() => {
     getDocs(query(collection(db, 'entregas'), limit(9)))
       .then((s) => { if (!s.empty) setItems(s.docs.map((d) => ({ id: d.id, ...d.data() }))) })
       .catch(() => {})
   }, [])
+
+  const container = { hidden: {}, show: { transition: { staggerChildren: reduce ? 0 : 0.06 } } }
+  const tile = reduce
+    ? { hidden: { opacity: 1, scale: 1 }, show: { opacity: 1, scale: 1 } }
+    : { hidden: { opacity: 0, scale: 0.96 }, show: { opacity: 1, scale: 1, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } } }
 
   return (
     <section id="entregas" className="bg-white py-24 sm:py-32">
@@ -67,13 +74,19 @@ const Deliveries = () => {
           <p className="mt-2 text-body">Pedidos que ya están en manos de nuestros clientes.</p>
         </Reveal>
 
-        <Reveal>
-          <div className="grid auto-rows-[42vw] grid-flow-dense grid-cols-2 gap-3 sm:auto-rows-[24vw] sm:grid-cols-3 lg:auto-rows-[210px] lg:grid-cols-4">
-            {items.slice(0, 9).map((d, i) => (
-              <Tile key={d.id || i} d={d} i={i} />
-            ))}
-          </div>
-        </Reveal>
+        <motion.div
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.15 }}
+          variants={container}
+          className="grid auto-rows-[42vw] grid-flow-dense grid-cols-2 gap-3 sm:auto-rows-[24vw] sm:grid-cols-3 lg:auto-rows-[210px] lg:grid-cols-4"
+        >
+          {items.slice(0, 9).map((d, i) => (
+            <motion.div key={d.id || i} variants={tile} className={spanFor(i)}>
+              <Tile d={d} />
+            </motion.div>
+          ))}
+        </motion.div>
 
         <div className="mt-10 text-center">
           <a
